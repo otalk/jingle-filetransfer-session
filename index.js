@@ -1,6 +1,6 @@
 var util = require('util');
 var extend = require('extend-object');
-var BaseSession = require('jinlge').BaseSession;
+var BaseSession = require('jingle').BaseSession;
 var RTCPeerConnection = require('rtcpeerconnection');
 var FileTransfer = require('filetransfer');
 
