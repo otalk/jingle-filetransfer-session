@@ -6,7 +6,7 @@ var FileTransfer = require('filetransfer');
 
 
 function FileTransferSession(opts) {
-    BaseSession.call(this);
+    BaseSession.call(this, opts);
 
     var self = this;
 
