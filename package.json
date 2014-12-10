@@ -8,9 +8,9 @@
   ],
   "dependencies": {
     "extend-object": "^1.0.0",
-    "jingle": "^2.0.0",
-    "rtcpeerconnection": "^2.4.5",
-    "filetransfer": "^1.0.1"
+    "filetransfer": "^1.0.1",
+    "jingle-session": "^1.0.0",
+    "rtcpeerconnection": "^2.4.5"
   },
   "devDependencies": {
     "browserify": "^5.11.1",
