@@ -10,7 +10,7 @@
     "extend-object": "^1.0.0",
     "filetransfer": "^1.0.1",
     "jingle-session": "^1.0.0",
-    "rtcpeerconnection": "^2.4.5"
+    "rtcpeerconnection": "^3.0.0"
   },
   "devDependencies": {
     "browserify": "^5.11.1",
