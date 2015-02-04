@@ -171,11 +171,7 @@ FileTransferSession.prototype = extend(FileTransferSession.prototype, {
                 break;
             case 'failed':
                 this.connectionState = 'failed';
-                // Currently, in Chrome only the initiator goes to
-                // failed, so we need to signal this to the peer.
-                if (this.pc.isInitiator) {
-                    this.emit('iceFailed', this.session);
-                }
+                this.end('failed-transport');
                 break;
             case 'closed':
                 this.connectionState = 'disconnected';
