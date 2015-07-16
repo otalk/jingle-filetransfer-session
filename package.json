@@ -1,6 +1,6 @@
 {
   "name": "jingle-filetransfer-session",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "author": "Lance Stout <lance@andyet.net>",
   "bugs": "https://github.com/otalk/jingle-filetransfer-session/issues",
   "contributors": [
