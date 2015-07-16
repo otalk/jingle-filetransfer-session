@@ -19,7 +19,7 @@ clean:
 	rm -rf build
 
 test: lint
-	covert test/index.js | tap-spec
+#	covert test/index.js | tap-spec
 
 lint:
 	jshint .
