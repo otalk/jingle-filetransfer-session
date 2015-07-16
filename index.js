@@ -2,7 +2,7 @@ var util = require('util');
 var extend = require('extend-object');
 var BaseSession = require('jingle-session');
 var RTCPeerConnection = require('rtcpeerconnection');
-var FileTransfer = require('filetransfer');
+var FileTransfer = require('filetransfer/hashed');
 
 
 function FileTransferSession(opts) {
@@ -197,7 +197,7 @@ FileTransferSession.prototype = extend(FileTransferSession.prototype, {
         this.pc.isInitiator = false;
 
         var desc = changes.contents[0].description;
-        this.receiver.metadata = desc.offer.toJSON();
+        this.receiver.metadata = desc.offer;
 
         if (this.receiver.metadata.hash) {
             this.receiver.config.hash = this.receiver.metadata.hash.algo;
