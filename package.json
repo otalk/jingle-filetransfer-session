@@ -8,7 +8,7 @@
   ],
   "dependencies": {
     "extend-object": "^1.0.0",
-    "filetransfer": "^2.0.3",
+    "filetransfer": "^2.0.4",
     "jingle-session": "^1.0.0",
     "rtcpeerconnection": "^3.0.0"
   },
