@@ -8,8 +8,6 @@ var FileTransfer = require('filetransfer/hashed');
 function FileTransferSession(opts) {
     BaseSession.call(this, opts);
 
-    var self = this;
-
     this.pc = new RTCPeerConnection({
         iceServers: opts.iceServers || [],
         useJingle: true
@@ -19,40 +17,8 @@ function FileTransferSession(opts) {
     this.pc.on('iceConnectionStateChange', this.onIceStateChange.bind(this));
     this.pc.on('addChannel', this.onChannelAdded.bind(this));
 
-    this.sender = new FileTransfer.Sender();
-    this.sender.on('progress', function (sent, size) {
-        self._log('info', 'Send progress ' + sent + '/' + size);
-    });
-    this.sender.on('sentFile', function (meta) {
-        self._log('info', 'Sent file', meta.name);
-
-        var content = self.pc.localDescription.contents[0];
-        delete content.transport;
-
-        content.description = {
-            descType: 'filetransfer',
-            offer: {
-                hash: {
-                    algo: meta.algo,
-                    value: meta.hash
-                }
-            }
-        };
-
-        self.send('description-info', {
-            contents: [content]
-        });
-        self.emit('sentFile', self, meta);
-    });
-
-    this.receiver = new FileTransfer.Receiver();
-    this.receiver.on('progress', function (received, size) {
-        self._log('info', 'Receive progress ' + received + '/' + size);
-    });
-    this.receiver.on('receivedFile', function (file) {
-        self.receivedFile = file;
-        self.maybeReceivedFile();
-    });
+    this.sender = null;
+    this.receiver = null;
 }
 
 
@@ -70,6 +36,32 @@ FileTransferSession.prototype = extend(FileTransferSession.prototype, {
         this.state = 'pending';
 
         this.pc.isInitiator = true;
+
+        this.sender = new FileTransfer.Sender();
+        this.sender.on('progress', function (sent, size) {
+            self._log('info', 'Send progress ' + sent + '/' + size);
+        });
+        this.sender.on('sentFile', function (meta) {
+            self._log('info', 'Sent file', meta.name);
+
+            var content = self.pc.localDescription.contents[0];
+            delete content.transport;
+
+            content.description = {
+                descType: 'filetransfer',
+                offer: {
+                    hash: {
+                        algo: meta.algo,
+                        value: meta.hash
+                    }
+                }
+            };
+
+            self.send('description-info', {
+                contents: [content]
+            });
+            self.emit('sentFile', self, meta);
+        });
 
         var sendChannel = this.pc.createDataChannel('filetransfer');
         sendChannel.onopen = function () {
@@ -197,11 +189,17 @@ FileTransferSession.prototype = extend(FileTransferSession.prototype, {
         this.pc.isInitiator = false;
 
         var desc = changes.contents[0].description;
-        this.receiver.metadata = desc.offer;
 
-        if (this.receiver.metadata.hash) {
-            this.receiver.config.hash = this.receiver.metadata.hash.algo;
-        }
+
+        this.receiver = new FileTransfer.Receiver({hash: desc.offer.hash.algo});
+        this.receiver.on('progress', function (received, size) {
+            self._log('info', 'Receive progress ' + received + '/' + size);
+        });
+        this.receiver.on('receivedFile', function (file) {
+            self.receivedFile = file;
+            self.maybeReceivedFile();
+        });
+        this.receiver.metadata = desc.offer;
 
         changes.contents[0].description = {
             descType: 'datachannel'
