@@ -110,9 +110,6 @@ FileTransferSession.prototype = extend(FileTransferSession.prototype, {
                 self._log('error', 'Could not create WebRTC answer', err);
                 return self.end('failed-application');
             }
-
-            answer.jingle.contents[0].name = 'data';
-
             self.send('session-accept', answer.jingle);
         });
     },
@@ -141,7 +138,6 @@ FileTransferSession.prototype = extend(FileTransferSession.prototype, {
 
     onIceCandidate: function (candidate) {
         this._log('info', 'Discovered new ICE candidate', candidate.jingle);
-        candidate.jingle.contents[0].name = 'data';
         this.send('transport-info', candidate.jingle);
     },
 
