@@ -47,8 +47,8 @@ FileTransferSession.prototype = extend(FileTransferSession.prototype, {
             var content = self.pc.localDescription.contents[0];
             delete content.transport;
 
-            content.description = {
-                descType: 'filetransfer',
+            content.application = {
+                applicationType: 'filetransfer',
                 offer: {
                     hash: {
                         algo: meta.algo,
@@ -81,8 +81,8 @@ FileTransferSession.prototype = extend(FileTransferSession.prototype, {
                 return self.end('failed-application', true);
             }
 
-            offer.jingle.contents[0].description = {
-                descType: 'filetransfer',
+            offer.jingle.contents[0].application = {
+                applicationType: 'filetransfer',
                 offer: {
                     date: file.lastModifiedDate,
                     name: file.name,
@@ -184,7 +184,7 @@ FileTransferSession.prototype = extend(FileTransferSession.prototype, {
 
         this.pc.isInitiator = false;
 
-        var desc = changes.contents[0].description;
+        var desc = changes.contents[0].application;
 
 
         this.receiver = new FileTransfer.Receiver({hash: desc.offer.hash.algo});
@@ -197,8 +197,8 @@ FileTransferSession.prototype = extend(FileTransferSession.prototype, {
         });
         this.receiver.metadata = desc.offer;
 
-        changes.contents[0].description = {
-            descType: 'datachannel'
+        changes.contents[0].application = {
+            applicationType: 'datachannel'
         };
 
         this.pc.handleOffer({
@@ -218,8 +218,8 @@ FileTransferSession.prototype = extend(FileTransferSession.prototype, {
 
         this.state = 'active';
         
-        changes.contents[0].description = {
-            descType: 'datachannel'
+        changes.contents[0].application = {
+            applicationType: 'datachannel'
         };
 
         this.pc.handleAnswer({
@@ -243,7 +243,7 @@ FileTransferSession.prototype = extend(FileTransferSession.prototype, {
     },
 
     onDescriptionInfo: function (info, cb) {
-        var hash = info.contents[0].description.offer.hash;
+        var hash = info.contents[0].application.offer.hash;
         this.receiver.metadata.hash = hash;
         if (this.receiver.metadata.actualhash) {
             this.maybeReceivedFile();
